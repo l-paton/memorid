@@ -11,20 +11,20 @@
   },
   "themes": {
     "title": "Temáticas",
-    "newTheme": "Nueva Temática",
+    "newTheme": "Nueva temática",
     "themeName": "Nombre de la temática",
     "themeNameRequired": "Por favor, introduce un nombre para la temática",
-    "deleteTheme": "Eliminar Temática",
+    "deleteTheme": "Eliminar temática",
     "deleteThemeConfirm": "¿Estás seguro de que quieres eliminar esta temática?",
     "noThemes": "No hay temáticas disponibles"
   },
   "cards": {
     "title": "Tarjetas",
-    "newCard": "Nueva Tarjeta",
+    "newCard": "Nueva tarjeta",
     "word": "Palabra",
     "description": "Descripción",
     "fillAllFields": "Por favor, rellena todos los campos",
-    "deleteCard": "Eliminar Tarjeta",
+    "deleteCard": "Eliminar tarjeta",
     "deleteCardConfirm": "¿Estás seguro de que quieres eliminar esta tarjeta?",
     "noCards": "No hay tarjetas disponibles",
     "successRate": "Tasa de éxito: {{rate}}%"
@@ -36,7 +36,10 @@
     "answer": "Respuesta",
     "next": "Siguiente",
     "noCardsAvailable": "No hay tarjetas disponibles",
+    "addCardsMessage": "Añade tarjetas a la temática para poder practicar",
     "congratulations": "¡Felicidades!",
-    "completed": "Has completado todas las tarjetas"
+    "completed": "Has completado todas las tarjetas",
+    "error": "Error",
+    "invalidCard": "La tarjeta no es válida"
   }
 } 

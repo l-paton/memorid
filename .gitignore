@@ -34,3 +34,59 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# EAS
+eas.json
+*.eas.json
+eas-hooks
+*.eas-build
+*.eas-metadata.json
+.eas
+.eas-cli.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Android/IntelliJ
+build/
+.idea
+.gradle
+local.properties
+*.iml
+*.hprof
+.cxx/
+*.keystore
+!debug.keystore
+
+# iOS
+ios/Pods/
+*.xcworkspace
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata
+*.xccheckout
+*.moved-aside
+DerivedData
+*.hmap
+*.ipa
+*.xcuserstate
+project.xcworkspace
+*.xcuserstate
+*.xcscmblueprint
+
+
+android/

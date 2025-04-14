@@ -6,11 +6,11 @@ export const themeDetailStyles = StyleSheet.create({
     paddingBottom: 100,
   },
   cardItem: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.secondary,
     padding: 16,
     borderRadius: 8,
     marginBottom: 12,
-    elevation: 2,
+    elevation: 4,
     shadowColor: colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,

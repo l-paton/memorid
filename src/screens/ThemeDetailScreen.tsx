@@ -127,8 +127,6 @@ const ThemeDetailScreen = () => {
 
   return (
     <View style={commonStyles.container}>
-      <Text style={commonStyles.title}>{t('cards.title')}</Text>
-      
       {showNewCardForm && (
         <View style={commonStyles.inputContainer}>
           <TextInput
@@ -148,7 +146,7 @@ const ThemeDetailScreen = () => {
               style={[commonStyles.button, commonStyles.cancelButton]}
               onPress={() => setShowNewCardForm(false)}
             >
-              <Text style={commonStyles.buttonText}>{t('common.cancel')}</Text>
+              <Text style={commonStyles.buttonWhiteText}>{t('common.cancel')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[commonStyles.button, commonStyles.addButton]}
@@ -179,7 +177,7 @@ const ThemeDetailScreen = () => {
           style={[commonStyles.button, themeDetailStyles.practiceButton]}
           onPress={() => navigation.navigate('Practice', { themeId })}
         >
-          <Text style={commonStyles.buttonText}>{t('common.practice')}</Text>
+          <Text style={commonStyles.buttonWhiteText}>{t('common.practice')}</Text>
         </TouchableOpacity>
       </View>
     </View>

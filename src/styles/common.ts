@@ -44,6 +44,10 @@ export const commonStyles = StyleSheet.create({
     marginHorizontal: 4,
   },
   buttonText: {
+    color: colors.primary,
+    fontWeight: 'bold',
+  },
+  buttonWhiteText: {
     color: colors.white,
     fontWeight: 'bold',
   },

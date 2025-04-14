@@ -77,7 +77,7 @@ const PracticeScreen = () => {
   };
 
   const getRandomCard = (availableCards: Card[]) => {
-    if (availableCards.length === 0) {
+    if (!availableCards || availableCards.length === 0) {
       Alert.alert(
         t('practice.noCardsAvailable'),
         t('practice.noCardsAvailable'),
@@ -98,6 +98,20 @@ const PracticeScreen = () => {
     let nextCard = shuffledCards[0];
     if (currentCard && shuffledCards.length > 1) {
       nextCard = shuffledCards.find(card => card.id !== currentCard.id) || shuffledCards[0];
+    }
+    
+    if (!nextCard || !nextCard.description || !nextCard.word) {
+      Alert.alert(
+        t('practice.error'),
+        t('practice.invalidCard'),
+        [
+          {
+            text: t('common.back'),
+            onPress: () => navigation.goBack()
+          }
+        ]
+      );
+      return;
     }
     
     setCurrentCard(nextCard);
@@ -148,7 +162,7 @@ const PracticeScreen = () => {
                 style={practiceStyles.checkButton}
                 onPress={checkAnswer}
               >
-                <Text style={commonStyles.buttonText}>{t('practice.check')}</Text>
+                <Text style={commonStyles.buttonWhiteText}>{t('practice.check')}</Text>
               </TouchableOpacity>
             </>
           ) : (
@@ -171,6 +185,9 @@ const PracticeScreen = () => {
       ) : (
         <View style={practiceStyles.emptyContainer}>
           <Text style={practiceStyles.emptyText}>{t('practice.noCardsAvailable')}</Text>
+          <Text style={[practiceStyles.emptyText, { fontSize: 14, marginTop: 8 }]}>
+            {t('practice.addCardsMessage')}
+          </Text>
           <TouchableOpacity
             style={practiceStyles.backButton}
             onPress={() => navigation.goBack()}

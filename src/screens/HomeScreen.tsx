@@ -24,15 +24,20 @@ const HomeScreen = () => {
       title: t('themes.title'),
       headerRight: () => (
         <View style={commonStyles.languageSelector}>
-          <Picker
-            selectedValue={i18nInstance.language as 'es' | 'en'}
-            onValueChange={(itemValue: 'es' | 'en') => changeLanguage(itemValue)}
-            style={commonStyles.picker}
-            dropdownIconColor="#000"
-          >
-            <Picker.Item label="ES" value="es" />
-            <Picker.Item label="EN" value="en" />
-          </Picker>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Text style={{ marginRight: 8, color: '#000' }}>
+              {i18nInstance.language.toUpperCase()}
+            </Text>
+            <Picker
+              selectedValue={i18nInstance.language as 'es' | 'en'}
+              onValueChange={(itemValue: 'es' | 'en') => changeLanguage(itemValue)}
+              style={commonStyles.picker}
+              dropdownIconColor="#000"
+            >
+              <Picker.Item label="ES" value="es" />
+              <Picker.Item label="EN" value="en" />
+            </Picker>
+          </View>
         </View>
       ),
     });
@@ -42,7 +47,20 @@ const HomeScreen = () => {
     try {
       const storedThemes = await AsyncStorage.getItem('themes');
       if (storedThemes) {
-        setThemes(JSON.parse(storedThemes));
+        const themesData = JSON.parse(storedThemes);
+        
+        // Cargar las tarjetas para cada tema
+        const themesWithCards = await Promise.all(
+          themesData.map(async (theme: Theme) => {
+            const storedCards = await AsyncStorage.getItem(`cards_${theme.id}`);
+            return {
+              ...theme,
+              cards: storedCards ? JSON.parse(storedCards) : []
+            };
+          })
+        );
+        
+        setThemes(themesWithCards);
       }
     } catch (error) {
       console.error('Error al cargar las temáticas:', error);
@@ -123,8 +141,6 @@ const HomeScreen = () => {
 
   return (
     <View style={commonStyles.container}>
-      <Text style={commonStyles.title}>{t('themes.title')}</Text>
-      
       {showNewThemeForm && (
         <View style={commonStyles.inputContainer}>
           <TextInput
@@ -138,7 +154,7 @@ const HomeScreen = () => {
               style={[commonStyles.button, commonStyles.cancelButton]}
               onPress={() => setShowNewThemeForm(false)}
             >
-              <Text style={commonStyles.buttonText}>{t('common.cancel')}</Text>
+              <Text style={commonStyles.buttonWhiteText}>{t('common.cancel')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[commonStyles.button, commonStyles.addButton]}
@@ -169,7 +185,7 @@ const HomeScreen = () => {
           style={[commonStyles.button, homeStyles.practiceButton]}
           onPress={() => navigation.navigate('Practice', { themeId: undefined })}
         >
-          <Text style={commonStyles.buttonText}>{t('common.practiceAll')}</Text>
+          <Text style={commonStyles.buttonWhiteText}>{t('common.practiceAll')}</Text>
         </TouchableOpacity>
       </View>
     </View>
