@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
 import { RootStackParamList, Card } from '../types';
+import { commonStyles } from '../styles/common';
+import { practiceStyles } from '../styles/practice';
 
 type PracticeScreenRouteProp = RouteProp<RootStackParamList, 'Practice'>;
 type PracticeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Practice'>;
@@ -129,133 +131,56 @@ const PracticeScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={commonStyles.container}>
       {currentCard ? (
-        <View style={styles.cardContainer}>
-          <Text style={styles.description}>{currentCard.description}</Text>
+        <View style={practiceStyles.cardContainer}>
+          <Text style={practiceStyles.description}>{currentCard.description}</Text>
           
           {!showAnswer ? (
             <>
               <TextInput
-                style={styles.input}
+                style={commonStyles.input}
                 placeholder={t('practice.writeWord')}
                 value={userAnswer}
                 onChangeText={setUserAnswer}
               />
               <TouchableOpacity
-                style={styles.checkButton}
+                style={practiceStyles.checkButton}
                 onPress={checkAnswer}
               >
-                <Text style={styles.buttonText}>{t('practice.check')}</Text>
+                <Text style={commonStyles.buttonText}>{t('practice.check')}</Text>
               </TouchableOpacity>
             </>
           ) : (
             <>
-              <Text style={styles.answerText}>
+              <Text style={practiceStyles.answerText}>
                 {t('practice.answer')}: {currentCard.word}
               </Text>
-              <Text style={styles.statsText}>
+              <Text style={practiceStyles.statsText}>
                 {t('cards.successRate', { rate: getSuccessRate(currentCard.id) })}
               </Text>
               <TouchableOpacity
-                style={styles.nextButton}
+                style={practiceStyles.nextButton}
                 onPress={() => getRandomCard(cards)}
               >
-                <Text style={styles.buttonText}>{t('practice.next')}</Text>
+                <Text style={commonStyles.buttonText}>{t('practice.next')}</Text>
               </TouchableOpacity>
             </>
           )}
         </View>
       ) : (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>{t('practice.noCardsAvailable')}</Text>
+        <View style={practiceStyles.emptyContainer}>
+          <Text style={practiceStyles.emptyText}>{t('practice.noCardsAvailable')}</Text>
           <TouchableOpacity
-            style={styles.backButton}
+            style={practiceStyles.backButton}
             onPress={() => navigation.goBack()}
           >
-            <Text style={styles.buttonText}>{t('common.back')}</Text>
+            <Text style={commonStyles.buttonText}>{t('common.back')}</Text>
           </TouchableOpacity>
         </View>
       )}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#f5f5f5',
-  },
-  cardContainer: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  description: {
-    fontSize: 18,
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-  },
-  checkButton: {
-    backgroundColor: '#4CAF50',
-    padding: 15,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  nextButton: {
-    backgroundColor: '#2196F3',
-    padding: 15,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  answerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#4CAF50',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  statsText: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptyText: {
-    fontSize: 18,
-    color: '#666',
-    marginBottom: 20,
-  },
-  backButton: {
-    backgroundColor: '#2196F3',
-    padding: 15,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-});
 
 export default PracticeScreen;

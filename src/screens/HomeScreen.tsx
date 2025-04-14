@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
 import { RootStackParamList, Theme } from '../types';
-import i18n from '../i18n';
+import { commonStyles } from '../styles/common';
+import { homeStyles } from '../styles/home';
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
 
@@ -22,11 +23,11 @@ const HomeScreen = () => {
     navigation.setOptions({
       title: t('themes.title'),
       headerRight: () => (
-        <View style={styles.languageSelector}>
+        <View style={commonStyles.languageSelector}>
           <Picker
             selectedValue={i18nInstance.language as 'es' | 'en'}
             onValueChange={(itemValue: 'es' | 'en') => changeLanguage(itemValue)}
-            style={styles.picker}
+            style={commonStyles.picker}
             dropdownIconColor="#000"
           >
             <Picker.Item label="ES" value="es" />
@@ -99,19 +100,19 @@ const HomeScreen = () => {
   };
 
   const renderThemeItem = ({ item }: { item: Theme }) => (
-    <View style={styles.themeCard}>
+    <View style={homeStyles.themeCard}>
       <TouchableOpacity
-        style={styles.themeContent}
+        style={homeStyles.themeContent}
         onPress={() => navigation.navigate('ThemeDetail', { themeId: item.id })}
       >
-        <Text style={styles.themeName}>{item.name}</Text>
-        <Text style={styles.cardCount}>{item.cards.length} {t('cards.title')}</Text>
+        <Text style={homeStyles.themeName}>{item.name}</Text>
+        <Text style={homeStyles.cardCount}>{item.cards.length} {t('cards.title')}</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        style={styles.deleteButton}
+        style={commonStyles.deleteButton}
         onPress={() => deleteTheme(item.id)}
       >
-        <Text style={styles.deleteButtonText}>{t('common.delete')}</Text>
+        <Text style={commonStyles.deleteButtonText}>{t('common.delete')}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -121,29 +122,29 @@ const HomeScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{t('themes.title')}</Text>
+    <View style={commonStyles.container}>
+      <Text style={commonStyles.title}>{t('themes.title')}</Text>
       
       {showNewThemeForm && (
-        <View style={styles.inputContainer}>
+        <View style={commonStyles.inputContainer}>
           <TextInput
-            style={styles.input}
+            style={commonStyles.input}
             placeholder={t('themes.themeName')}
             value={newThemeName}
             onChangeText={setNewThemeName}
           />
-          <View style={styles.buttonRow}>
+          <View style={commonStyles.buttonRow}>
             <TouchableOpacity
-              style={[styles.button, styles.cancelButton]}
+              style={[commonStyles.button, commonStyles.cancelButton]}
               onPress={() => setShowNewThemeForm(false)}
             >
-              <Text style={styles.buttonText}>{t('common.cancel')}</Text>
+              <Text style={commonStyles.buttonText}>{t('common.cancel')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.button, styles.addButton]}
+              style={[commonStyles.button, commonStyles.addButton]}
               onPress={addTheme}
             >
-              <Text style={styles.buttonText}>{t('common.save')}</Text>
+              <Text style={commonStyles.buttonText}>{t('common.save')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -153,142 +154,26 @@ const HomeScreen = () => {
         data={themes}
         renderItem={renderThemeItem}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContainer}
+        contentContainerStyle={homeStyles.listContainer}
       />
       
-      <View style={styles.bottomButtons}>
+      <View style={homeStyles.bottomButtons}>
         <TouchableOpacity
-          style={[styles.button, styles.newThemeButton]}
+          style={[commonStyles.button, homeStyles.newThemeButton]}
           onPress={() => setShowNewThemeForm(true)}
         >
-          <Text style={styles.buttonText}>{t('themes.newTheme')}</Text>
+          <Text style={commonStyles.buttonText}>{t('themes.newTheme')}</Text>
         </TouchableOpacity>
         
         <TouchableOpacity
-          style={[styles.button, styles.practiceButton]}
+          style={[commonStyles.button, homeStyles.practiceButton]}
           onPress={() => navigation.navigate('Practice', { themeId: undefined })}
         >
-          <Text style={styles.buttonText}>{t('common.practiceAll')}</Text>
+          <Text style={commonStyles.buttonText}>{t('common.practiceAll')}</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#f5f5f5',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    color: '#333',
-  },
-  inputContainer: {
-    backgroundColor: 'white',
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 16,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 4,
-    padding: 8,
-    marginBottom: 8,
-    backgroundColor: '#fff',
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  button: {
-    flex: 1,
-    padding: 12,
-    borderRadius: 4,
-    alignItems: 'center',
-    marginHorizontal: 4,
-  },
-  addButton: {
-    backgroundColor: '#2196F3',
-  },
-  cancelButton: {
-    backgroundColor: '#f44336',
-  },
-  newThemeButton: {
-    backgroundColor: '#2196F3',
-  },
-  practiceButton: {
-    backgroundColor: '#4CAF50',
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  listContainer: {
-    paddingBottom: 100,
-  },
-  themeCard: {
-    backgroundColor: 'white',
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 12,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  themeContent: {
-    flex: 1,
-  },
-  themeName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  cardCount: {
-    fontSize: 12,
-    color: '#888',
-    marginTop: 4,
-  },
-  deleteButton: {
-    backgroundColor: '#f44336',
-    padding: 8,
-    borderRadius: 4,
-    marginLeft: 8,
-  },
-  deleteButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  bottomButtons: {
-    position: 'absolute',
-    bottom: 16,
-    left: 16,
-    right: 16,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  languageSelector: {
-    width: 80,
-    marginRight: 10,
-  },
-  picker: {
-    height: 40,
-    width: '100%',
-  },
-});
 
 export default HomeScreen;

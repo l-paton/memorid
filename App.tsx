@@ -5,6 +5,7 @@ import { RootStackParamList } from './src/types';
 import HomeScreen from './src/screens/HomeScreen';
 import ThemeDetailScreen from './src/screens/ThemeDetailScreen';
 import PracticeScreen from './src/screens/PracticeScreen';
+import { navigationStyles } from './src/styles/navigation';
 import './src/i18n';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -14,15 +15,7 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="Home"
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: '#4CAF50',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-        }}
+        screenOptions={navigationStyles}
       >
         <Stack.Screen
           name="Home"
