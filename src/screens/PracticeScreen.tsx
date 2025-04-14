@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert } from 'reac
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
 import { RootStackParamList, Card } from '../types';
 
 type PracticeScreenRouteProp = RouteProp<RootStackParamList, 'Practice'>;
@@ -11,6 +12,7 @@ type PracticeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList
 const PracticeScreen = () => {
   const route = useRoute<PracticeScreenRouteProp>();
   const navigation = useNavigation<PracticeScreenNavigationProp>();
+  const { t } = useTranslation();
   const themeId = route.params?.themeId;
 
   const [cards, setCards] = useState<Card[]>([]);
@@ -22,7 +24,10 @@ const PracticeScreen = () => {
   useEffect(() => {
     loadCards();
     loadStats();
-  }, []);
+    navigation.setOptions({
+      title: t('practice.title'),
+    });
+  }, [navigation, t]);
 
   const loadCards = async () => {
     try {
@@ -72,11 +77,11 @@ const PracticeScreen = () => {
   const getRandomCard = (availableCards: Card[]) => {
     if (availableCards.length === 0) {
       Alert.alert(
-        'No hay tarjetas disponibles',
-        'No hay tarjetas para practicar en este momento.',
+        t('practice.noCardsAvailable'),
+        t('practice.noCardsAvailable'),
         [
           {
-            text: 'Volver',
+            text: t('common.back'),
             onPress: () => navigation.goBack()
           }
         ]
@@ -133,7 +138,7 @@ const PracticeScreen = () => {
             <>
               <TextInput
                 style={styles.input}
-                placeholder="Escribe la palabra"
+                placeholder={t('practice.writeWord')}
                 value={userAnswer}
                 onChangeText={setUserAnswer}
               />
@@ -141,34 +146,34 @@ const PracticeScreen = () => {
                 style={styles.checkButton}
                 onPress={checkAnswer}
               >
-                <Text style={styles.buttonText}>Comprobar</Text>
+                <Text style={styles.buttonText}>{t('practice.check')}</Text>
               </TouchableOpacity>
             </>
           ) : (
             <>
               <Text style={styles.answerText}>
-                Respuesta: {currentCard.word}
+                {t('practice.answer')}: {currentCard.word}
               </Text>
               <Text style={styles.statsText}>
-                Porcentaje de aciertos: {getSuccessRate(currentCard.id)}%
+                {t('cards.successRate', { rate: getSuccessRate(currentCard.id) })}
               </Text>
               <TouchableOpacity
                 style={styles.nextButton}
                 onPress={() => getRandomCard(cards)}
               >
-                <Text style={styles.buttonText}>Siguiente</Text>
+                <Text style={styles.buttonText}>{t('practice.next')}</Text>
               </TouchableOpacity>
             </>
           )}
         </View>
       ) : (
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>No hay tarjetas disponibles</Text>
+          <Text style={styles.emptyText}>{t('practice.noCardsAvailable')}</Text>
           <TouchableOpacity
             style={styles.backButton}
             onPress={() => navigation.goBack()}
           >
-            <Text style={styles.buttonText}>Volver</Text>
+            <Text style={styles.buttonText}>{t('common.back')}</Text>
           </TouchableOpacity>
         </View>
       )}

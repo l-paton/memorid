@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Alert, M
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
 import { RootStackParamList, Card } from '../types';
 
 type ThemeDetailScreenRouteProp = RouteProp<RootStackParamList, 'ThemeDetail'>;
@@ -12,6 +13,7 @@ type ThemeDetailScreenNavigationProp = NativeStackNavigationProp<RootStackParamL
 const ThemeDetailScreen = () => {
   const route = useRoute<ThemeDetailScreenRouteProp>();
   const navigation = useNavigation<ThemeDetailScreenNavigationProp>();
+  const { t } = useTranslation();
   const themeId = route.params.themeId;
 
   const [cards, setCards] = useState<Card[]>([]);
@@ -23,7 +25,10 @@ const ThemeDetailScreen = () => {
   useEffect(() => {
     loadCards();
     loadStats();
-  }, []);
+    navigation.setOptions({
+      title: t('cards.title'),
+    });
+  }, [navigation, t]);
 
   const loadCards = async () => {
     try {
@@ -62,7 +67,7 @@ const ThemeDetailScreen = () => {
 
   const addCard = async () => {
     if (!newWord.trim() || !newDescription.trim()) {
-      Alert.alert('Error', 'Por favor, completa todos los campos');
+      Alert.alert('Error', t('cards.fillAllFields'));
       return;
     }
 
@@ -83,15 +88,15 @@ const ThemeDetailScreen = () => {
 
   const deleteCard = async (cardId: string) => {
     Alert.alert(
-      'Eliminar Tarjeta',
-      '¿Estás seguro de que quieres eliminar esta tarjeta?',
+      t('cards.deleteCard'),
+      t('cards.deleteCardConfirm'),
       [
         {
-          text: 'Cancelar',
+          text: t('common.cancel'),
           style: 'cancel'
         },
         {
-          text: 'Eliminar',
+          text: t('common.delete'),
           style: 'destructive',
           onPress: async () => {
             const updatedCards = cards.filter(card => card.id !== cardId);
@@ -109,21 +114,21 @@ const ThemeDetailScreen = () => {
         <Text style={styles.word}>{item.word}</Text>
         <Text style={styles.description}>{item.description}</Text>
         <Text style={styles.statsText}>
-          Porcentaje de aciertos: {getSuccessRate(item.id)}%
+          {t('cards.successRate', { rate: getSuccessRate(item.id) })}
         </Text>
       </View>
       <TouchableOpacity
         style={styles.deleteButton}
         onPress={() => deleteCard(item.id)}
       >
-        <Text style={styles.deleteButtonText}>Eliminar</Text>
+        <Text style={styles.deleteButtonText}>{t('common.delete')}</Text>
       </TouchableOpacity>
     </View>
   );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tarjetas de la Temática</Text>
+      <Text style={styles.title}>{t('cards.title')}</Text>
       
       <FlatList
         data={cards}
@@ -137,14 +142,14 @@ const ThemeDetailScreen = () => {
           style={[styles.button, styles.newCardButton]}
           onPress={() => setShowNewCardModal(true)}
         >
-          <Text style={styles.buttonText}>Nueva Tarjeta</Text>
+          <Text style={styles.buttonText}>{t('cards.newCard')}</Text>
         </TouchableOpacity>
         
         <TouchableOpacity
           style={[styles.button, styles.practiceButton]}
           onPress={() => navigation.navigate('Practice', { themeId })}
         >
-          <Text style={styles.buttonText}>Practicar</Text>
+          <Text style={styles.buttonText}>{t('common.practice')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -155,18 +160,18 @@ const ThemeDetailScreen = () => {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Nueva Tarjeta</Text>
+            <Text style={styles.modalTitle}>{t('cards.newCard')}</Text>
             
             <TextInput
               style={styles.input}
-              placeholder="Palabra"
+              placeholder={t('cards.word')}
               value={newWord}
               onChangeText={setNewWord}
             />
             
             <TextInput
               style={[styles.input, styles.descriptionInput]}
-              placeholder="Descripción"
+              placeholder={t('cards.description')}
               value={newDescription}
               onChangeText={setNewDescription}
               multiline
@@ -177,14 +182,14 @@ const ThemeDetailScreen = () => {
                 style={[styles.button, styles.cancelButton]}
                 onPress={() => setShowNewCardModal(false)}
               >
-                <Text style={styles.buttonText}>Cancelar</Text>
+                <Text style={styles.buttonText}>{t('common.cancel')}</Text>
               </TouchableOpacity>
               
               <TouchableOpacity
                 style={[styles.button, styles.addButton]}
                 onPress={addCard}
               >
-                <Text style={styles.buttonText}>Añadir</Text>
+                <Text style={styles.buttonText}>{t('common.save')}</Text>
               </TouchableOpacity>
             </View>
           </View>

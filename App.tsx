@@ -1,14 +1,15 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { RootStackParamList } from './src/types';
 import HomeScreen from './src/screens/HomeScreen';
 import ThemeDetailScreen from './src/screens/ThemeDetailScreen';
 import PracticeScreen from './src/screens/PracticeScreen';
-import { RootStackParamList } from './src/types';
+import './src/i18n';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-export default function App() {
+const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -31,14 +32,16 @@ export default function App() {
         <Stack.Screen
           name="ThemeDetail"
           component={ThemeDetailScreen}
-          options={{ title: 'Detalle de Temática' }}
+          options={{ title: 'Tarjetas' }}
         />
         <Stack.Screen
           name="Practice"
           component={PracticeScreen}
-          options={{ title: 'Práctica' }}
+          options={{ title: 'Practicar' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
   );
-}
+};
+
+export default App;

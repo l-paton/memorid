@@ -1,21 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
 import { RootStackParamList, Theme } from '../types';
+import i18n from '../i18n';
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
 
 const HomeScreen = () => {
-  const navigation = useNavigation<HomeScreenNavigationProp>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { t, i18n: i18nInstance } = useTranslation();
   const [themes, setThemes] = useState<Theme[]>([]);
   const [showNewThemeForm, setShowNewThemeForm] = useState(false);
   const [newThemeName, setNewThemeName] = useState('');
 
   useEffect(() => {
     loadThemes();
-  }, []);
+    navigation.setOptions({
+      title: t('themes.title'),
+      headerRight: () => (
+        <View style={styles.languageSelector}>
+          <Picker
+            selectedValue={i18nInstance.language as 'es' | 'en'}
+            onValueChange={(itemValue: 'es' | 'en') => changeLanguage(itemValue)}
+            style={styles.picker}
+            dropdownIconColor="#000"
+          >
+            <Picker.Item label="ES" value="es" />
+            <Picker.Item label="EN" value="en" />
+          </Picker>
+        </View>
+      ),
+    });
+  }, [navigation, i18nInstance.language, t]);
 
   const loadThemes = async () => {
     try {
@@ -38,7 +58,7 @@ const HomeScreen = () => {
 
   const addTheme = async () => {
     if (!newThemeName.trim()) {
-      Alert.alert('Error', 'Por favor, introduce un nombre para la temática');
+      Alert.alert('Error', t('themes.themeNameRequired'));
       return;
     }
 
@@ -57,21 +77,20 @@ const HomeScreen = () => {
 
   const deleteTheme = async (themeId: string) => {
     Alert.alert(
-      'Eliminar Temática',
-      '¿Estás seguro de que quieres eliminar esta temática? Se eliminarán todas sus tarjetas.',
+      t('themes.deleteTheme'),
+      t('themes.deleteThemeConfirm'),
       [
         {
-          text: 'Cancelar',
+          text: t('common.cancel'),
           style: 'cancel'
         },
         {
-          text: 'Eliminar',
+          text: t('common.delete'),
           style: 'destructive',
           onPress: async () => {
             const updatedThemes = themes.filter(theme => theme.id !== themeId);
             setThemes(updatedThemes);
             await saveThemes(updatedThemes);
-            // También eliminamos las tarjetas asociadas
             await AsyncStorage.removeItem(`cards_${themeId}`);
           }
         }
@@ -86,26 +105,30 @@ const HomeScreen = () => {
         onPress={() => navigation.navigate('ThemeDetail', { themeId: item.id })}
       >
         <Text style={styles.themeName}>{item.name}</Text>
-        <Text style={styles.cardCount}>{item.cards.length} tarjetas</Text>
+        <Text style={styles.cardCount}>{item.cards.length} {t('cards.title')}</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.deleteButton}
         onPress={() => deleteTheme(item.id)}
       >
-        <Text style={styles.deleteButtonText}>Eliminar</Text>
+        <Text style={styles.deleteButtonText}>{t('common.delete')}</Text>
       </TouchableOpacity>
     </View>
   );
 
+  const changeLanguage = (lng: 'es' | 'en') => {
+    i18nInstance.changeLanguage(lng);
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Temáticas</Text>
+      <Text style={styles.title}>{t('themes.title')}</Text>
       
       {showNewThemeForm && (
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
-            placeholder="Nombre de la temática"
+            placeholder={t('themes.themeName')}
             value={newThemeName}
             onChangeText={setNewThemeName}
           />
@@ -114,13 +137,13 @@ const HomeScreen = () => {
               style={[styles.button, styles.cancelButton]}
               onPress={() => setShowNewThemeForm(false)}
             >
-              <Text style={styles.buttonText}>Cancelar</Text>
+              <Text style={styles.buttonText}>{t('common.cancel')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, styles.addButton]}
               onPress={addTheme}
             >
-              <Text style={styles.buttonText}>Añadir</Text>
+              <Text style={styles.buttonText}>{t('common.save')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -138,14 +161,14 @@ const HomeScreen = () => {
           style={[styles.button, styles.newThemeButton]}
           onPress={() => setShowNewThemeForm(true)}
         >
-          <Text style={styles.buttonText}>Nueva Temática</Text>
+          <Text style={styles.buttonText}>{t('themes.newTheme')}</Text>
         </TouchableOpacity>
         
         <TouchableOpacity
           style={[styles.button, styles.practiceButton]}
           onPress={() => navigation.navigate('Practice', { themeId: undefined })}
         >
-          <Text style={styles.buttonText}>Practicar Todas</Text>
+          <Text style={styles.buttonText}>{t('common.practiceAll')}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -257,6 +280,14 @@ const styles = StyleSheet.create({
     right: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  languageSelector: {
+    width: 80,
+    marginRight: 10,
+  },
+  picker: {
+    height: 40,
+    width: '100%',
   },
 });
 

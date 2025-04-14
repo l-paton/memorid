@@ -1,0 +1,39 @@
+{
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "practice": "Practice",
+    "practiceAll": "Practice All"
+  },
+  "themes": {
+    "title": "Themes",
+    "newTheme": "New Theme",
+    "themeName": "Theme name",
+    "themeNameRequired": "Please enter a name for the theme",
+    "deleteTheme": "Delete Theme",
+    "deleteThemeConfirm": "Are you sure you want to delete this theme?"
+  },
+  "cards": {
+    "title": "Cards",
+    "newCard": "New Card",
+    "word": "Word",
+    "description": "Description",
+    "fillAllFields": "Please fill in all fields",
+    "deleteCard": "Delete Card",
+    "deleteCardConfirm": "Are you sure you want to delete this card?",
+    "noCards": "No cards available",
+    "successRate": "Success rate: {{rate}}%"
+  },
+  "practice": {
+    "title": "Practice",
+    "writeWord": "Write the word",
+    "check": "Check",
+    "answer": "Answer",
+    "next": "Next",
+    "noCardsAvailable": "No cards available"
+  }
+} 
