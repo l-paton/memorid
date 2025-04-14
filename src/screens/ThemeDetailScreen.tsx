@@ -18,9 +18,11 @@ const ThemeDetailScreen = () => {
   const [showNewCardModal, setShowNewCardModal] = useState(false);
   const [newWord, setNewWord] = useState('');
   const [newDescription, setNewDescription] = useState('');
+  const [stats, setStats] = useState<{ [key: string]: { correct: number; total: number } }>({});
 
   useEffect(() => {
     loadCards();
+    loadStats();
   }, []);
 
   const loadCards = async () => {
@@ -32,6 +34,22 @@ const ThemeDetailScreen = () => {
     } catch (error) {
       console.error('Error al cargar las tarjetas:', error);
     }
+  };
+
+  const loadStats = async () => {
+    try {
+      const storedStats = await AsyncStorage.getItem('card_stats');
+      if (storedStats) {
+        setStats(JSON.parse(storedStats));
+      }
+    } catch (error) {
+      console.error('Error al cargar las estadísticas:', error);
+    }
+  };
+
+  const getSuccessRate = (cardId: string) => {
+    if (!stats[cardId] || stats[cardId].total === 0) return 0;
+    return Math.round((stats[cardId].correct / stats[cardId].total) * 100);
   };
 
   const saveCards = async (cardsToSave: Card[]) => {
@@ -90,6 +108,9 @@ const ThemeDetailScreen = () => {
       <View style={styles.cardContent}>
         <Text style={styles.word}>{item.word}</Text>
         <Text style={styles.description}>{item.description}</Text>
+        <Text style={styles.statsText}>
+          Porcentaje de aciertos: {getSuccessRate(item.id)}%
+        </Text>
       </View>
       <TouchableOpacity
         style={styles.deleteButton}
@@ -291,6 +312,11 @@ const styles = StyleSheet.create({
   deleteButtonText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  statsText: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 8,
   },
 });
 
