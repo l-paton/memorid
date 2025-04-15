@@ -40,7 +40,7 @@ export const practiceStyles = StyleSheet.create({
   },
   statsText: {
     fontSize: 16,
-    color: colors.text.secondary,
+    color: colors.text.primary,
     textAlign: 'center',
     marginBottom: 20,
   },

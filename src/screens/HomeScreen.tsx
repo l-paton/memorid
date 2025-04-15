@@ -17,6 +17,7 @@ const HomeScreen = () => {
   const [themes, setThemes] = useState<Theme[]>([]);
   const [showNewThemeForm, setShowNewThemeForm] = useState(false);
   const [newThemeName, setNewThemeName] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     loadThemes();
@@ -139,6 +140,12 @@ const HomeScreen = () => {
     i18nInstance.changeLanguage(lng);
   };
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadThemes();
+    setRefreshing(false);
+  };
+
   return (
     <View style={commonStyles.container}>
       {showNewThemeForm && (
@@ -154,7 +161,7 @@ const HomeScreen = () => {
               style={[commonStyles.button, commonStyles.cancelButton]}
               onPress={() => setShowNewThemeForm(false)}
             >
-              <Text style={commonStyles.buttonWhiteText}>{t('common.cancel')}</Text>
+              <Text style={commonStyles.buttonText}>{t('common.cancel')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[commonStyles.button, commonStyles.addButton]}
@@ -171,6 +178,8 @@ const HomeScreen = () => {
         renderItem={renderThemeItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={homeStyles.listContainer}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
       />
       
       <View style={homeStyles.bottomButtons}>
