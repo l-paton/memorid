@@ -9,8 +9,6 @@ import { RootStackParamList, Theme } from '../types';
 import { commonStyles } from '../styles/common';
 import { homeStyles } from '../styles/home';
 
-type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
-
 const HomeScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { t, i18n: i18nInstance } = useTranslation();

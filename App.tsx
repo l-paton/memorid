@@ -8,30 +8,15 @@ import PracticeScreen from './src/screens/PracticeScreen';
 import { navigationStyles } from './src/styles/navigation';
 import './src/i18n';
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="Home"
-        screenOptions={navigationStyles}
-      >
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{ title: 'Temáticas' }}
-        />
-        <Stack.Screen
-          name="ThemeDetail"
-          component={ThemeDetailScreen}
-          options={{ title: 'Tarjetas' }}
-        />
-        <Stack.Screen
-          name="Practice"
-          component={PracticeScreen}
-          options={{ title: 'Practicar' }}
-        />
+      <Stack.Navigator initialRouteName="Home" screenOptions={navigationStyles}>
+        <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Temáticas' }}/>
+        <Stack.Screen name="ThemeDetail" component={ThemeDetailScreen} options={{ title: 'Tarjetas' }}/>
+        <Stack.Screen name="Practice" component={PracticeScreen} options={{ title: 'Practicar' }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
