@@ -3,11 +3,11 @@ import { View, Text, FlatList, TouchableOpacity, TextInput, Alert } from 'react-
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
 import { RootStackParamList, Theme } from '../types';
 import { commonStyles } from '../styles/common';
 import { homeStyles } from '../styles/home';
+import { themeService } from '../services/themeService';
 
 const HomeScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -42,37 +42,14 @@ const HomeScreen = () => {
     });
   }, [navigation, i18nInstance.language, t]);
 
-  const loadThemes = async () => {
-    try {
-      const storedThemes = await AsyncStorage.getItem('themes');
-      if (storedThemes) {
-        const themesData = JSON.parse(storedThemes);
-        
-        // Cargar las tarjetas para cada tema
-        const themesWithCards = await Promise.all(
-          themesData.map(async (theme: Theme) => {
-            const storedCards = await AsyncStorage.getItem(`cards_${theme.id}`);
-            return {
-              ...theme,
-              cards: storedCards ? JSON.parse(storedCards) : []
-            };
-          })
-        );
-        
-        setThemes(themesWithCards);
-      }
-    } catch (error) {
+  const loadThemes = async() => {
+    try{
+      const newThemes = await themeService.getThemes();
+      setThemes(newThemes);
+    }catch(error){
       console.error('Error al cargar las temáticas:', error);
     }
-  };
-
-  const saveThemes = async (themesToSave: Theme[]) => {
-    try {
-      await AsyncStorage.setItem('themes', JSON.stringify(themesToSave));
-    } catch (error) {
-      console.error('Error al guardar las temáticas:', error);
-    }
-  };
+  }
 
   const addTheme = async () => {
     if (!newThemeName.trim()) {
@@ -80,17 +57,13 @@ const HomeScreen = () => {
       return;
     }
 
-    const newTheme: Theme = {
-      id: Date.now().toString(),
-      name: newThemeName.trim(),
-      cards: []
-    };
+    const newTheme = await themeService.addTheme(newThemeName);
 
-    const updatedThemes = [...themes, newTheme];
-    setThemes(updatedThemes);
-    await saveThemes(updatedThemes);
-    setNewThemeName('');
-    setShowNewThemeForm(false);
+    if (newTheme) {
+      loadThemes();
+      setNewThemeName('');
+      setShowNewThemeForm(false);
+    }
   };
 
   const deleteTheme = async (themeId: string) => {
@@ -106,10 +79,15 @@ const HomeScreen = () => {
           text: t('common.delete'),
           style: 'destructive',
           onPress: async () => {
-            const updatedThemes = themes.filter(theme => theme.id !== themeId);
-            setThemes(updatedThemes);
-            await saveThemes(updatedThemes);
-            await AsyncStorage.removeItem(`cards_${themeId}`);
+            const isDeleted = await themeService.deleteTheme(themeId);
+            
+            if(!isDeleted){
+              Alert.alert(
+                t('themes.deleteTheme'),
+                t('themes.deleteFailed'));
+            }
+
+            loadThemes();
           }
         }
       ]
@@ -179,15 +157,14 @@ const HomeScreen = () => {
         refreshing={refreshing}
         onRefresh={onRefresh}
       />
-      
+
       <View style={homeStyles.bottomButtons}>
         <TouchableOpacity
           style={[commonStyles.button, homeStyles.newThemeButton]}
-          onPress={() => setShowNewThemeForm(true)}
-        >
+          onPress={() => setShowNewThemeForm(true)}>
           <Text style={commonStyles.buttonText}>{t('themes.newTheme')}</Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity
           style={[commonStyles.button, homeStyles.practiceButton]}
           onPress={() => navigation.navigate('Practice', { themeId: undefined })}

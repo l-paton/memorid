@@ -16,7 +16,8 @@
     "themeNameRequired": "Por favor, introduce un nombre para la temática",
     "deleteTheme": "Eliminar temática",
     "deleteThemeConfirm": "¿Estás seguro de que quieres eliminar esta temática?",
-    "noThemes": "No hay temáticas disponibles"
+    "noThemes": "No hay temáticas disponibles",
+    "deleteFailed": "El borrado ha fallado"
   },
   "cards": {
     "title": "Tarjetas",
@@ -27,7 +28,8 @@
     "deleteCard": "Eliminar tarjeta",
     "deleteCardConfirm": "¿Estás seguro de que quieres eliminar esta tarjeta?",
     "noCards": "No hay tarjetas disponibles",
-    "successRate": "Tasa de éxito: {{rate}}%"
+    "successRate": "Tasa de éxito: {{rate}}%",
+    "deleteFailed": "El borrado ha fallado"
   },
   "practice": {
     "title": "Practicar",

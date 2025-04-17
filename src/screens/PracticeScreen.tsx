@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
 import { RootStackParamList, Card } from '../types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { commonStyles } from '../styles/common';
 import { practiceStyles } from '../styles/practice';
+import { cardService } from '../services/cardService';
+import { statService } from '../services/statService';
 
 type PracticeScreenRouteProp = RouteProp<RootStackParamList, 'Practice'>;
 type PracticeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Practice'>;
@@ -34,10 +36,10 @@ const PracticeScreen = () => {
   const loadCards = async () => {
     try {
       if (themeId) {
-        const storedCards = await AsyncStorage.getItem(`cards_${themeId}`);
+        const storedCards = await cardService.getCards(themeId);
         if (storedCards) {
-          setCards(JSON.parse(storedCards));
-          getRandomCard(JSON.parse(storedCards));
+          setCards(storedCards);
+          getRandomCard(storedCards);
         }
       } else {
         const allCards: Card[] = [];
@@ -59,9 +61,10 @@ const PracticeScreen = () => {
 
   const loadStats = async () => {
     try {
-      const storedStats = await AsyncStorage.getItem('card_stats');
+      const storedStats = await statService.getStats();
+
       if (storedStats) {
-        setStats(JSON.parse(storedStats));
+        setStats(storedStats);
       }
     } catch (error) {
       console.error('Error al cargar las estadísticas:', error);
@@ -70,7 +73,7 @@ const PracticeScreen = () => {
 
   const saveStats = async (newStats: { [key: string]: { correct: number; total: number } }) => {
     try {
-      await AsyncStorage.setItem('card_stats', JSON.stringify(newStats));
+      await statService.saveStats(newStats);
     } catch (error) {
       console.error('Error al guardar las estadísticas:', error);
     }

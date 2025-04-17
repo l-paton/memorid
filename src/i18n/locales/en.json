@@ -15,7 +15,8 @@
     "themeName": "Theme name",
     "themeNameRequired": "Please enter a name for the theme",
     "deleteTheme": "Delete theme",
-    "deleteThemeConfirm": "Are you sure you want to delete this theme?"
+    "deleteThemeConfirm": "Are you sure you want to delete this theme?",
+    "deleteFailed": "Delete failed"
   },
   "cards": {
     "title": "Cards",
@@ -26,7 +27,8 @@
     "deleteCard": "Delete card",
     "deleteCardConfirm": "Are you sure you want to delete this card?",
     "noCards": "No cards available",
-    "successRate": "Success rate: {{rate}}%"
+    "successRate": "Success rate: {{rate}}%",
+    "deleteFailed": "Delete failed"
   },
   "practice": {
     "title": "Practice",

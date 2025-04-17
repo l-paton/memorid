@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { RootStackParamList, Card } from '../types';
 import { commonStyles } from '../styles/common';
 import { themeDetailStyles } from '../styles/themeDetail';
+import { cardService } from '../services/cardService';
 
 type ThemeDetailScreenRouteProp = RouteProp<RootStackParamList, 'ThemeDetail'>;
 
@@ -22,50 +23,18 @@ const ThemeDetailScreen = () => {
   const [showNewCardForm, setShowNewCardForm] = useState(false);
   const [newWord, setNewWord] = useState('');
   const [newDescription, setNewDescription] = useState('');
-  const [stats, setStats] = useState<{ [key: string]: { correct: number; total: number } }>({});
 
   useEffect(() => {
     loadCards();
-    loadStats();
     navigation.setOptions({
       title: t('cards.title'),
     });
   }, [navigation, t]);
 
-  const loadCards = async () => {
-    try {
-      const storedCards = await AsyncStorage.getItem(`cards_${themeId}`);
-      if (storedCards) {
-        setCards(JSON.parse(storedCards));
-      }
-    } catch (error) {
-      console.error('Error al cargar las tarjetas:', error);
-    }
-  };
-
-  const loadStats = async () => {
-    try {
-      const storedStats = await AsyncStorage.getItem('card_stats');
-      if (storedStats) {
-        setStats(JSON.parse(storedStats));
-      }
-    } catch (error) {
-      console.error('Error al cargar las estadísticas:', error);
-    }
-  };
-
-  const getSuccessRate = (cardId: string) => {
-    if (!stats[cardId] || stats[cardId].total === 0) return 0;
-    return Math.round((stats[cardId].correct / stats[cardId].total) * 100);
-  };
-
-  const saveCards = async (cardsToSave: Card[]) => {
-    try {
-      await AsyncStorage.setItem(`cards_${themeId}`, JSON.stringify(cardsToSave));
-    } catch (error) {
-      console.error('Error al guardar las tarjetas:', error);
-    }
-  };
+  const loadCards = async() => {
+    const cards = await cardService.getCards(themeId);
+    setCards(cards);
+  }
 
   const addCard = async () => {
     if (!newWord.trim() || !newDescription.trim()) {
@@ -73,19 +42,14 @@ const ThemeDetailScreen = () => {
       return;
     }
 
-    const newCard: Card = {
-      id: Date.now().toString(),
-      word: newWord.trim(),
-      description: newDescription.trim(),
-      themeId: themeId
-    };
+    const newCard = await cardService.addCard(themeId, newWord, newDescription);
 
-    const updatedCards = [...cards, newCard];
-    setCards(updatedCards);
-    await saveCards(updatedCards);
-    setNewWord('');
-    setNewDescription('');
-    setShowNewCardForm(false);
+    if(newCard){
+      loadCards();
+      setNewWord('');
+      setNewDescription('');
+      setShowNewCardForm(false);
+    }
   };
 
   const deleteCard = async (cardId: string) => {
@@ -101,9 +65,15 @@ const ThemeDetailScreen = () => {
           text: t('common.delete'),
           style: 'destructive',
           onPress: async () => {
-            const updatedCards = cards.filter(card => card.id !== cardId);
-            setCards(updatedCards);
-            await saveCards(updatedCards);
+            const isDeleted = await cardService.deleteCard(themeId, cardId);
+
+            if(!isDeleted){
+              Alert.alert(
+                t('cards.deleteCard'),
+                t('cards.deleteFailed'));
+            }
+            
+            loadCards();
           }
         }
       ]
