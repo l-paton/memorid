@@ -25,7 +25,7 @@ const HomeScreen = () => {
         <View style={commonStyles.languageSelector}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text style={{ marginRight: 8, color: '#000' }}>
-              {i18nInstance.language.toUpperCase()}
+              {i18nInstance.language?.toUpperCase()}
             </Text>
             <Picker
               selectedValue={i18nInstance.language as 'es' | 'en'}
@@ -101,7 +101,7 @@ const HomeScreen = () => {
         onPress={() => navigation.navigate('ThemeDetail', { themeId: item.id })}
       >
         <Text style={homeStyles.themeName}>{item.name}</Text>
-        <Text style={homeStyles.cardCount}>{item.cards.length} {t('cards.title')}</Text>
+        <Text style={homeStyles.cardCount}>{item.cards?.length ?? 0} {t('cards.title')}</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={commonStyles.deleteButton}

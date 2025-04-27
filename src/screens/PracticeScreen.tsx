@@ -99,7 +99,7 @@ const PracticeScreen = () => {
     
     // Si la tarjeta actual es la misma que la anterior, tomar la siguiente
     let nextCard = shuffledCards[0];
-    if (currentCard && shuffledCards.length > 1) {
+    if (currentCard && shuffledCards?.length > 1) {
       nextCard = shuffledCards.find(card => card.id !== currentCard.id) || shuffledCards[0];
     }
     
