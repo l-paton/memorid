@@ -33,6 +33,7 @@ export const themeDetailStyles = StyleSheet.create({
     marginTop: 4,
   },
   bottomButtons: {
+    padding:10,
     position: 'absolute',
     bottom: 16,
     left: 16,
@@ -42,6 +43,8 @@ export const themeDetailStyles = StyleSheet.create({
   },
   newCardButton: {
     backgroundColor: colors.secondary,
+    borderColor: colors.border,
+    borderWidth: 2
   },
   practiceButton: {
     backgroundColor: colors.primary,

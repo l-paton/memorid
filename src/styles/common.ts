@@ -55,7 +55,7 @@ export const commonStyles = StyleSheet.create({
     backgroundColor: colors.secondary,
   },
   cancelButton: {
-    backgroundColor: colors.danger,
+    backgroundColor: colors.danger
   },
   deleteButton: {
     backgroundColor: colors.danger,

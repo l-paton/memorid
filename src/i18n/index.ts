@@ -17,32 +17,37 @@ const getStoredLanguage = async () => {
   }
 };
 
-const initI18n = async () => {
-  const language = await getStoredLanguage();
-  
-  i18n
-    .use(initReactI18next)
-    .init({
-      resources: {
-        en: { translation: en },
-        es: { translation: es }
-      },
-      lng: language,
-      fallbackLng: 'es',
-      interpolation: {
-        escapeValue: false
+export const initI18n = async () => {
+  try {
+    const language = await getStoredLanguage();
+    
+    await i18n
+      .use(initReactI18next)
+      .init({
+        resources: {
+          en: { translation: en },
+          es: { translation: es }
+        },
+        lng: language,
+        fallbackLng: 'es',
+        interpolation: {
+          escapeValue: false
+        }
+      });
+
+    i18n.on('languageChanged', async (lng) => {
+      try {
+        await AsyncStorage.setItem(LANG_KEY, lng);
+      } catch (error) {
+        console.error('Error al guardar el idioma:', error);
       }
     });
 
-  i18n.on('languageChanged', async (lng) => {
-    try {
-      await AsyncStorage.setItem(LANG_KEY, lng);
-    } catch (error) {
-      console.error('Error al guardar el idioma:', error);
-    }
-  });
+    return i18n;
+  } catch (error) {
+    console.error('Error al inicializar i18n:', error);
+    throw error;
+  }
 };
-
-initI18n();
 
 export default i18n; 

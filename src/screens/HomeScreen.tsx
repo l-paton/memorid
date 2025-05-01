@@ -45,9 +45,15 @@ const HomeScreen = () => {
   const loadThemes = async() => {
     try{
       const newThemes = await themeService.getThemes();
-      setThemes(newThemes);
+      if (Array.isArray(newThemes)) {
+        setThemes(newThemes);
+      } else {
+        console.error('Los temas no son un array:', newThemes);
+        setThemes([]);
+      }
     }catch(error){
       console.error('Error al cargar las temáticas:', error);
+      setThemes([]);
     }
   }
 
@@ -94,23 +100,29 @@ const HomeScreen = () => {
     );
   };
 
-  const renderThemeItem = ({ item }: { item: Theme }) => (
-    <View style={homeStyles.themeCard}>
-      <TouchableOpacity
-        style={homeStyles.themeContent}
-        onPress={() => navigation.navigate('ThemeDetail', { themeId: item.id })}
-      >
-        <Text style={homeStyles.themeName}>{item.name}</Text>
-        <Text style={homeStyles.cardCount}>{item.cards?.length ?? 0} {t('cards.title')}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={commonStyles.deleteButton}
-        onPress={() => deleteTheme(item.id)}
-      >
-        <Text style={commonStyles.deleteButtonText}>{t('common.delete')}</Text>
-      </TouchableOpacity>
-    </View>
-  );
+  const renderThemeItem = ({ item }: { item: Theme }) => {
+    if (!item) return null;
+    
+    return (
+      <View style={homeStyles.themeCard}>
+        <TouchableOpacity
+          style={homeStyles.themeContent}
+          onPress={() => navigation.navigate('ThemeDetail', { themeId: item.id })}
+        >
+          <Text style={homeStyles.themeName}>{item.name || ''}</Text>
+          <Text style={homeStyles.cardCount}>
+            {(item.cards || []).length} {t('cards.title')}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={commonStyles.deleteButton}
+          onPress={() => deleteTheme(item.id)}
+        >
+          <Text style={commonStyles.deleteButtonText}>{t('common.delete')}</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
 
   const changeLanguage = (lng: 'es' | 'en') => {
     i18nInstance.changeLanguage(lng);

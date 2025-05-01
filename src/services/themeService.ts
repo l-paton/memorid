@@ -7,7 +7,11 @@ export const themeService = {
   async getThemes(): Promise<Theme[]>{
     try {
       const storedThemes = await AsyncStorage.getItem('themes');
-      return storedThemes ? JSON.parse(storedThemes) : [];
+      const themes = storedThemes ? JSON.parse(storedThemes) : [];
+      return themes.map((theme: Theme) => ({
+        ...theme,
+        cards: theme.cards || []
+      }));
     } catch (error) {
       console.error('Error al cargar los temas:', error);
       return [];
@@ -16,7 +20,11 @@ export const themeService = {
 
   async saveThemes(themes: Theme[]): Promise<void> {
     try {
-      await AsyncStorage.setItem('themes', JSON.stringify(themes));
+      const themesToSave = themes.map(theme => ({
+        ...theme,
+        cards: theme.cards || []
+      }));
+      await AsyncStorage.setItem('themes', JSON.stringify(themesToSave));
     } catch (error) {
       console.error('Error al guardar los temas:', error);
     }
